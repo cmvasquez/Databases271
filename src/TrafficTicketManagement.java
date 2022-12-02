@@ -25,6 +25,8 @@ public class TrafficTicketManagement {
     public static void main(String[] args) throws ParseException, IOException {
         // Load the data from storage to the hashmaps -- method is in FileOperations class
         FileOperations.loadData();
+        mostFrequentViolation();
+
         // Run the menu -- method is in MenuOperations class
         MenuOperations.menu();
     }  // method main
@@ -113,6 +115,48 @@ public class TrafficTicketManagement {
         }
     }  // method searchForDriver
 
+    public static void mostFrequentViolation() {
+        // first check if there are any violations
+        if (violations == null) {
+            System.out.println("\nThere are no violations within the system! \n");
+        } else {
+            // create new hash map with the elements of violations hashmap as keys and their occurrence as values
+            HashMap<Integer, Integer> violationCountMap = new HashMap<Integer, Integer>();
+            // insert the violation codes from trafficTickets in the new hashmap
+            for (Map.Entry<Integer, TrafficTicket> trafficTicketEntry : trafficTickets.entrySet()) {
+                // create new trafficticket object
+                TrafficTicket violationCodeCurrent = trafficTicketEntry.getValue();
+                // the current key
+                int i = violationCodeCurrent.violationCode;
+                if (violationCountMap.containsKey(i)) {
+                    // if the map already has this key, add 1 to its value
+                    violationCountMap.put(i, violationCountMap.get(i) + 1);
+                } else {
+                    // if the map does not have this key, put it in and set value to 1
+                    violationCountMap.put(i, 1);
+                }
+            }
+            // which element shows up the most
+            int element = 0;
+            // the frequency that element shows up
+            int frequency = 1;
+            // create entry set of the violationCountMap
+            Set<Map.Entry<Integer, Integer>> entrySet = violationCountMap.entrySet();
+            // iterate through each (k, v) value in the entrySet
+            for (Map.Entry<Integer, Integer> entry : entrySet) {
+                // if the value is greater than the frequency
+                if(entry.getValue() > frequency) {
+                    // change element to the most frequent element so far
+                    element = entry.getKey();
+                    // change frequency to the amount of times element has occurred
+                    frequency = entry.getValue();
+                }
+            }
+            // printing which element is most frequent and its frequency
+            System.out.println("The most frequent violation is number: " + element +
+                    "\nIt appears this many times: " + frequency);
+        }
+    } // method mostFrequentViolation
 
     /** Inactive method - do not implement unless working on OPTION A*/
     public static void searchForPlate() {}  // method searchForPlate
